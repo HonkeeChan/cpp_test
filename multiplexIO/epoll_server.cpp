@@ -1,4 +1,4 @@
-//#include <sys/epoll.h>
+#include <sys/epoll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,10 +110,11 @@ handle_events(int epollfd,struct epoll_event *events,int num,int listenfd,char *
 
 static void handle_accpet(int epollfd,int listenfd)
 {
+    printf("handle_accept\n");
     int clifd;
     struct sockaddr_in cliaddr;
     socklen_t  cliaddrlen;
-    clifd = accept(listenfd,(struct sockaddr*)&cliaddr,&cliaddrlen);
+    clifd = accept(listenfd, (struct sockaddr*)&cliaddr, &cliaddrlen);
     if (clifd == -1)
         perror("accpet error:");
     else
@@ -150,6 +151,7 @@ static void modify_event(int epollfd,int fd,int state)
 
 static void do_read(int epollfd,int fd,char *buf)
 {
+    printf("do_read\n");
     int nread;
     nread = read(fd,buf,MAXSIZE);
     if (nread == -1)
@@ -166,7 +168,7 @@ static void do_read(int epollfd,int fd,char *buf)
     }
     else
     {
-        printf("read message is : %s",buf);
+        printf("read message is : %s\n",buf);
         //修改描述符对应的事件，由读改为写
         modify_event(epollfd,fd,EPOLLOUT);
     }
@@ -174,8 +176,9 @@ static void do_read(int epollfd,int fd,char *buf)
 
 static void do_write(int epollfd,int fd,char *buf)
 {
+    printf("do_write\n");
     int nwrite;
-    nwrite = write(fd,buf,strlen(buf));
+    nwrite = write(fd,buf,strlen(buf) + 1);
     if (nwrite == -1)
     {
         perror("write error:");
