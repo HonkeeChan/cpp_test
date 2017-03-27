@@ -113,7 +113,7 @@ static void handle_accpet(int epollfd,int listenfd)
     printf("handle_accept\n");
     int clifd;
     struct sockaddr_in cliaddr;
-    socklen_t  cliaddrlen;
+    socklen_t  cliaddrlen = sizeof(cliaddr);
     clifd = accept(listenfd, (struct sockaddr*)&cliaddr, &cliaddrlen);
     if (clifd == -1)
         perror("accpet error:");
