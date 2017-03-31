@@ -33,30 +33,66 @@ int main(){
     // cout<<"Hello,"<<name<<",Your Volume is "<<volume<<" with "<<price<<" Dollars."<<endl; 
 
     // int i;
-    // for(;;)
+    // for(int j = 4;j > 0; --j)
     // {
     //     i = 10;
     //     cout << "waiting for input " << endl;
-    //     cin.clear();
-    //     cin.sync();
+    //     //cout << "cin.clear: " << cin.clear() << endl;
+        
     //     //fflush(stdin);
 
     //     // string a;
     //     // cin >> a;
     //     // cout << "a: " << a << endl;
     //     cin >> i;
+    //     cout << "cin.sync: " << cin.sync() << endl;;
         
         
     // }
 
     int a;
-    while(cout<<"input a integer (1-10) :",cin>>a,! (a>=1 && a<=10) || cin.fail())
-    {
-       cout<<"try again!"<<endl;
-       cin.clear(); //清除std::cin的错误状态
-       cin.sync(); //清空输入缓冲区
-    }
+    char  b;
+    int ret = 0;
+    cout << "input a:" << endl;
+    cin >> a;
+    cout << "a:" << a << endl;
+    //cin.clear();
+    //cin.ignore();
+    cout << "input b:" << endl;
+    cin >> b;
+    cout << "b:" << b << endl;
 
+
+    // int a;
+    // int ret = 0;
+    // while(cout<<"input a integer :", cin >> a, (ret = cin.fail()))
+    // {
+    //    cout<<"try again!" << "ret val: " << ret <<endl;
+
+    //    cin.clear(); //清除std::cin的错误状态
+    //    cin.ignore(1000, '\n');
+    //    string str;
+    //    getline(cin, str);
+    //    cout << "get line str: " << str << endl;
+    //    cin.sync(); //清空输入缓冲区
+    // }
+
+    // int c;
+    // cin>>c;
+    // cout<< c<< endl;
+
+    // cout<< cin.fail()<< endl;
+    // cin >>c;
+    // cout<< c<< endl;
+
+    // int i, j;
+    // cin >> i >> j;
+    // cin.get();
+    // while(i--){
+    //  string s;
+    //  getline(cin, s);
+    //  cout << s << endl;
+    // }
 
     return 0;
 }
