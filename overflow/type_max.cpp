@@ -3,6 +3,7 @@
 
 using namespace std;
 int main(){
+    cout << "sizeof(short): " << sizeof(short) << endl;
     cout << "sizeof(int): " << sizeof(int) << endl;
     cout << "sizeof(unsigned int): " << sizeof(unsigned int) << endl;
     cout << "sizeof(long): " << sizeof(long) << endl;
