@@ -151,9 +151,12 @@ void serve_dynamic(int fd, char* filename, char* cgiargs){
         Dup2(fd, STDOUT_FILENO);
         Execve(filename, emptylist, environ);
     }
-    Wait(NULL);
+    //Wait(NULL);
 }
 
+/*
+    习题11.7, Content-type 中添加video后，浏览器会打开播放器播放视频文件。
+*/
 void get_filetype(char* filename, char* filetype){
     if(strstr(filename, ".html"))
         strcpy(filetype, "text/html");
@@ -161,6 +164,18 @@ void get_filetype(char* filename, char* filetype){
         strcpy(filename, "image/gif");
     else if(strstr(filename, ".jpg"))
         strcpy(filetype, "image/jpeg");
+    else if(strstr(filename, ".avi"))
+        strcpy(filetype, "video/avi");
+    else if(strstr(filename, ".flv"))
+        strcpy(filetype, "video/flv");
+    else if(strstr(filename, ".mpg"))
+        strcpy(filetype, "video/mpeg");
+    else if(strstr(filename, ".mpeg"))
+        strcpy(filetype, "video/mpeg");
+    else if(strstr(filename, ".wmv"))
+        strcpy(filetype, "video/wmv");
+    else if(strstr(filename, ".mp4"))
+        strcpy(filetype, "video/mp4");
     else
         strcpy(filetype, "text/plain");
 }

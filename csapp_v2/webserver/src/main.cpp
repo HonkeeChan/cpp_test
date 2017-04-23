@@ -10,6 +10,18 @@ extern "C"{
 
 using namespace std;
 
+/*
+    习题11.8， 使用信号来回收子进程的资源
+*/
+void wait_child(int signo){
+    //printf("handle child exit\n");
+    if(signo == SIGCHLD){
+        pid_t pid = -1;
+        int status = -1;
+        pid = Wait(&status);
+        printf("child process: %d, exit status: %d\n", pid, status);
+    }
+}
 
 
 int main(int argc, char** argv){
@@ -22,7 +34,7 @@ int main(int argc, char** argv){
 
     port = atoi(argv[1]);
     listenfd = Open_listenfd(port);
-
+    signal(SIGCHLD, wait_child);
     while(1){
         clientlen = sizeof(clientaddr);
         printf("waiting for client\n");
