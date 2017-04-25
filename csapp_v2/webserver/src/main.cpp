@@ -35,6 +35,8 @@ int main(int argc, char** argv){
     port = atoi(argv[1]);
     listenfd = Open_listenfd(port);
     signal(SIGCHLD, wait_child);
+    //习题11.13 忽略SIGPIPE信号
+    signal(SIGPIPE, SIG_IGN);
     while(1){
         clientlen = sizeof(clientaddr);
         printf("waiting for client\n");

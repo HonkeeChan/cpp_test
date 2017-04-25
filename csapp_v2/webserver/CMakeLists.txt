@@ -13,6 +13,8 @@ link_directories(
 set(SRC_LIST 
     src/main.cpp
     src/handle.cpp
+    src/get_method.cpp
+    src/post_method.cpp
     utils/csapp.c
 )
 
