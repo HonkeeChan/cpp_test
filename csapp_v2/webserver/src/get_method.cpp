@@ -1,15 +1,37 @@
 #include "../include/handle.h"
+#include "../utils/TimeTools.h"
+#include "../utils/FileTools.h"
+#include <string>
 
-void serve_static(int fd, char* filename, int filesize){
+
+void serve_static(int fd, char* filename, int filesize, RequestHeadInfo& reqInfo){
     int srcfd;
     char *srcp, filetype[MAXLINE], buf[MAXBUF];
     printf("serve_static filename: %s\n", filename);
     get_filetype(filename, filetype);
+    
+    std::string nowGMTStr = utils::TimeTools::getGMTimeNow();
+    std::string fileModifiedTime = utils::FileTools::getFileModifyTimeLinux(filename);
+
+    if(reqInfo.reqData[RequestHeaderName::If_Modify_Since].length() > 0 &&
+        cmpGMTStr(parseIfModifiedSince(reqInfo.reqData[RequestHeaderName::If_Modify_Since]), 
+                fileModifiedTime) >= 0){
+        sprintf(buf, "HTTP/1.0 302 Not-Modified\r\n");
+        sprintf(buf, "%sServer: Tiny Web Server\r\n", buf);
+        sprintf(buf, "%sContent-type: %s\r\n", buf, filetype);
+        sprintf(buf, "%sLast-Modified: %s\r\n\r\n", buf, fileModifiedTime.c_str());
+        //sprintf(buf, "%sExpires: Thu, 27 Apr 2017 20:19:26 GMT\r\n", buf);
+        Rio_writen(fd, buf, strlen(buf));
+        return;
+    }
+    
     sprintf(buf, "HTTP/1.0 200 OK\r\n");
     sprintf(buf, "%sServer: Tiny Web Server\r\n", buf);
+    sprintf(buf, "%sContent-type: %s\r\n", buf, filetype);
     sprintf(buf, "%sContent-length: %d\r\n", buf, filesize);
-    sprintf(buf, "%sContent-type: %s\r\n\r\n", buf, filetype);
-
+    //sprintf(buf, "%sCache-Control: max-age=30\r\n", buf);
+    sprintf(buf, "%sLast-Modified: %s\r\n\r\n", buf, nowGMTStr.c_str());
+    printf("response header:\r\n%s", buf);
     Rio_writen(fd, buf, strlen(buf));
 
     srcfd = Open(filename, O_RDONLY, 0);
@@ -20,12 +42,13 @@ void serve_static(int fd, char* filename, int filesize){
 
 }
 
-void serve_dynamic(int fd, char* filename, char* cgiargs){
+void serve_dynamic(int fd, char* filename, char* cgiargs, RequestHeadInfo& reqInfo){
     printf("serve_dynamic, filename: %s\n", filename);
 
     char buf[MAXLINE], *emptylist[] = {NULL};
     sprintf(buf, "HTTP/1.0 200 OK\r\n"); 
     sprintf(buf, "%sServer: Tiny Web Server\r\n", buf);
+    sprintf(buf, "%sContent-type: text/html\r\n", buf);
     Rio_writen(fd, buf, strlen(buf));
 
     if(Fork() == 0){
@@ -62,14 +85,11 @@ void get_filetype(char* filename, char* filetype){
         strcpy(filetype, "text/plain");
 }
 
-void decode_get_header(rio_t* rp){
-    char buf[MAXLINE];
+void decode_get_header(rio_t* rp, RequestHeadInfo& reqInfo){
+    
+    printf("***************header*****************\n");
+    decode_req_header(rp, reqInfo);
 
-    Rio_readlineb(rp, buf, MAXLINE);
-    while(strcmp(buf, "\r\n")){
-        Rio_readlineb(rp, buf, MAXLINE);
-        printf("%s", buf);
-    }
     return;
 }
 

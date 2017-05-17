@@ -1,11 +1,15 @@
 #include "../include/handle.h"
-
-void serve_post(int fd, char* filename, char* cgiargs){
+#include "../include/common.h"
+/*
+    11.12
+*/
+void serve_post(int fd, char* filename, char* cgiargs, RequestHeadInfo& reqInfo){
     printf("serve_post, filename: %s\n", filename);
 
     char buf[MAXLINE], *emptylist[] = {NULL};
     sprintf(buf, "HTTP/1.0 200 OK\r\n"); 
     sprintf(buf, "%sServer: Tiny Web Server\r\n", buf);
+    sprintf(buf, "%sContent-type: text/html\r\n", buf);
     Rio_writen(fd, buf, strlen(buf));
 
     if(Fork() == 0){
@@ -16,20 +20,14 @@ void serve_post(int fd, char* filename, char* cgiargs){
     //Wait(NULL);
 }
 
-void decode_post_header(rio_t* rp, char* cgiargs){
+void decode_post_header(rio_t* rp, char* cgiargs, RequestHeadInfo& reqInfo){
     char buf[MAXLINE];
     int bodyLength = -1;
-    Rio_readlineb(rp, buf, MAXLINE);
+
     printf("***************header*****************\n");
-    while(strcmp(buf, "\r\n")){
-        printf("%s", buf);
-        Rio_readlineb(rp, buf, MAXLINE);
-        if(strstr(buf, "Content-Length:")){
-            printf("in strstr: %s", buf);
-            sscanf(buf, "Content-Length: %d", &bodyLength);
-        }
-    }
-    printf("%s", buf);
+    decode_req_header(rp, reqInfo);
+    sscanf(reqInfo.reqData[RequestHeaderName::Content_Length].c_str(), "Content-Length: %d", &bodyLength);
+
     printf("***************body*****************\n");
     size_t n = 0;
     char* pPostBody = cgiargs;

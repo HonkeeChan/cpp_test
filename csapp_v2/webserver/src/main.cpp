@@ -31,7 +31,7 @@ int main(int argc, char** argv){
     if(argc != 2){
         fprintf(stderr, "usage: %s <port\n>", argv[0]);
     }
-
+    
     port = atoi(argv[1]);
     listenfd = Open_listenfd(port);
     signal(SIGCHLD, wait_child);

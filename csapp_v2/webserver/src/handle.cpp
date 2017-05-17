@@ -1,5 +1,11 @@
 #include <cstdlib>
+#include <string>
+#include <memory>
+#include <ctime>
+#include <cstdio>
 #include "../include/handle.h"
+#include "../include/common.h"
+#include "../utils/TimeTools.h"
 extern "C"{
     #include "../utils/csapp.h"
 }
@@ -18,8 +24,8 @@ void doit(int fd){
                     method, uri, version);
 
     if(strcasecmp(method, "GET") == 0){
-        
-        decode_get_header(&rio);
+        RequestHeadInfo reqInfo;
+        decode_get_header(&rio, reqInfo);
 
         char filename[512], cgiargs[512];
         isStatic = parse_get_uri(uri, filename, cgiargs);
@@ -31,32 +37,34 @@ void doit(int fd){
         }
 
         if(isStatic){
-            printf("S_ISREG: %d, S_IRUSR: %d\n", S_ISREG(fileStat.st_mode), S_IRUSR & fileStat.st_mode);
+            //printf("S_ISREG: %d, S_IRUSR: %d\n", S_ISREG(fileStat.st_mode), S_IRUSR & fileStat.st_mode);
             if( !(S_ISREG(fileStat.st_mode) || !( S_IRUSR & fileStat.st_mode)) || (access(filename, R_OK) == -1) ){
                 
                 clienterror(fd, filename, "403", "Forbidden", 
                         "Tiny couldn't read the file");
                 return;
             }
-            serve_static(fd, filename, fileStat.st_size);
+            serve_static(fd, filename, fileStat.st_size, reqInfo);
         }else{
             if( !(S_ISREG(fileStat.st_mode) || !( S_IRUSR & fileStat.st_mode)) || (access(filename, R_OK) == -1) ){
                 clienterror(fd, filename, "403", "Forbidden", 
                         "Tiny couldn't read the file");
                 return;
             }
-            serve_dynamic(fd, filename, cgiargs);
+            serve_dynamic(fd, filename, cgiargs, reqInfo);
         }
     }else if(strcasecmp(method, "HEAD") == 0){
         printf("handle head method\n");
         sprintf(buf, "HTTP/1.0 200 OK\r\n");
+        sprintf(buf, "Last-Modified: Tue, 15 Nov 2010 12:45:26 GMT\r\n");
         sprintf(buf, "%sServer: Tiny Web Server\r\n\r\n", buf);
-
+        
         Rio_writen(fd, buf, strlen(buf));
 
     }else if(strcasecmp(method, "POST") == 0){
         char filename[512], cgiargs[512];
-        decode_post_header(&rio, cgiargs);
+        RequestHeadInfo reqInfo;
+        decode_post_header(&rio, cgiargs, reqInfo);
 
         if(parse_post_uri(uri, filename) < 0){
             clienterror(fd, filename, "403", "Forbidden", 
@@ -74,7 +82,7 @@ void doit(int fd){
                         "Tiny couldn't read the file");
                 return;
         }
-        serve_post(fd, filename, cgiargs);
+        serve_post(fd, filename, cgiargs, reqInfo);
 
     }else{
         clienterror(fd, method, "501", "Not Implemented", 
@@ -118,4 +126,67 @@ char* index(char* str, char c){
         str++;
     }
     return NULL;
+}
+
+void decode_req_header(rio_t*rp, RequestHeadInfo& reqInfo){
+    char buf[MAXLINE];
+
+    Rio_readlineb(rp, buf, MAXLINE);
+    
+    while(strcmp(buf, "\r\n")){
+        printf("%s", buf);
+        Rio_readlineb(rp, buf, MAXLINE);
+        if(strstr(buf, "Content-Length:")){
+            reqInfo.reqData[RequestHeaderName::Content_Length] = 
+               std::string(buf);
+        }else if(strstr(buf, "Cache-Control:")){
+            reqInfo.reqData[RequestHeaderName::Cache_Control] = 
+                std::string(buf);
+        }else if(strstr(buf, "Cookie:")){
+            reqInfo.reqData[RequestHeaderName::Cookie] = 
+                std::string(buf);
+        }else if(strstr(buf, "Connection:")){
+            reqInfo.reqData[RequestHeaderName::Connection] = 
+                std::string(buf);
+        }else if(strstr(buf, "Content-Type:")){
+            reqInfo.reqData[RequestHeaderName::Content_Type] = 
+                std::string(buf);
+        }else if(strstr(buf, "If-Modified-Since:")){
+            reqInfo.reqData[RequestHeaderName::If_Modify_Since] = 
+                std::string(buf);
+        }
+
+    }
+
+    
+}
+
+int cmpGMTStr(const std::string& s1, const std::string& s2){
+    
+    std::tm t1, t2;
+    utils::TimeTools::parseGMTTime(s1, t1);
+    utils::TimeTools::parseGMTTime(s2, t2);
+    //utils::TimeTools::parseGMTTime("Wed, 17 May 2017 09:04:10 GMT", t1);
+    //utils::TimeTools::parseGMTTime("Wed, 17 May 2017 10:04:10 GMT", t2);
+    //char buffer[80];
+    //strftime (buffer,80,"Now it's %c.",&t1);
+    //printf("t1: %s\n", buffer);
+    //strftime (buffer,80,"Now it's %c.",&t2);
+    //printf("t2: %s\n", buffer);
+    double d = difftime( mktime(&t1), mktime(&t2));
+    //printf("s1: %s, s2: %s, d: %f",s1.c_str(), s2.c_str(),  d);
+    if(d > 0 )
+        return 1;
+    else if(d < 0)
+        return -1;
+    return 0;
+}
+
+std::string parseIfModifiedSince(const std::string& s){
+    char buf[MAXLINE];
+    //printf("parse if modified since: %s", s.c_str());
+    size_t idx = s.find("If-Modified-Since: ");
+    if(idx != std::string::npos)
+        return s.substr(idx + 19);
+    return "";
 }
