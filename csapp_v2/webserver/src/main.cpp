@@ -2,6 +2,8 @@
 #include <string>
 #include "../include/common.h"
 #include "../include/handle.h"
+#include "../include/hash_control.h"
+#include "../utils/UUIDTools.h"
 
 extern "C"{
     #include "../utils/csapp.h"
@@ -23,7 +25,8 @@ void wait_child(int signo){
     }
 }
 
-
+HashControl gHashContorl;
+void test();
 int main(int argc, char** argv){
     int listenfd, connfd, port, clientlen;
     struct sockaddr_in clientaddr;
@@ -31,6 +34,8 @@ int main(int argc, char** argv){
     if(argc != 2){
         fprintf(stderr, "usage: %s <port\n>", argv[0]);
     }
+
+    test();
     
     port = atoi(argv[1]);
     listenfd = Open_listenfd(port);
@@ -48,4 +53,14 @@ int main(int argc, char** argv){
         doit(connfd);
         Close(connfd);
     }
+}
+
+void test(){
+    int waiting;
+    //gHashContorl.set("hello", "world");
+    //printf("key hello, value: %s", gHashContorl.find("hello").c_str());
+    //gHashContorl.set("241f70332cfc4067b696509d7fc46efe", "241f70332cfc4067b696509d7fc46efe");
+    //cout << gHashContorl.find("241f70332cfc4067b696509d7fc46efe") << endl;;
+    //cout << "uuid: " << utils::UUIDTools::GenUUID() << endl;
+    //cin >> waiting;
 }

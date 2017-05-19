@@ -1,6 +1,7 @@
 #include "../include/handle.h"
 #include "../utils/TimeTools.h"
 #include "../utils/FileTools.h"
+#include "../include/get_method.h"
 #include <string>
 
 
@@ -53,6 +54,9 @@ void serve_dynamic(int fd, char* filename, char* cgiargs, RequestHeadInfo& reqIn
 
     if(Fork() == 0){
         setenv("QUERY_STRING", cgiargs, 1);
+        if(reqInfo.reqData[RequestHeaderName::Cookie].length()> 0){
+            setenv("COOKIE", reqInfo.reqData[RequestHeaderName::Cookie].c_str(), 1);
+        }
         Dup2(fd, STDOUT_FILENO);
         Execve(filename, emptylist, environ);
     }
@@ -81,6 +85,8 @@ void get_filetype(char* filename, char* filetype){
         strcpy(filetype, "video/wmv");
     else if(strstr(filename, ".mp4"))
         strcpy(filetype, "video/mp4");
+    else if(strstr(filename, ".js"))
+        strcpy(filetype, "application/javascript");
     else
         strcpy(filetype, "text/plain");
 }
