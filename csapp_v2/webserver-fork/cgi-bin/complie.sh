@@ -9,3 +9,6 @@ g++ --std=c++11 -o who who.cpp ../utils/UUIDTools.cpp \
 ../utils/TimeTools.cpp  \
 ../src/common.cpp ../utils/FileTools.cpp ../src/hash_control.cpp \
 -L. -lcsapp -lpthread -luuid -lmemcached
+
+g++ --std=c++11 -o cookie cookie.cpp ../src/common.cpp ../utils/TimeTools.cpp    \
+-L. -lcsapp -lpthread
