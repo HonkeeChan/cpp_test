@@ -1,0 +1,37 @@
+<html>
+    <h1>Adder form, Get Method</h1>
+    <form method="POST" action="/cgi-bin/login">
+        add1:
+        <input type="text" name="add1" />
+        add2:
+        <input type="text" name="add2" />
+        <input type="submit" value="GET FORM">
+        <button type="button" id="submitBtn" name="submitBtn" value="submit btn">
+    </form>
+    <!--<script src="/public/js/jquery.js"></script>-->
+    
+</html>
+
+<!--<script>
+        $(document).ready(function(){
+            $("#submitBtn").click(function(){
+                $.ajax({
+                    type: "post",
+                    url: "/cgi-bin/login",
+                    data: {
+                        add1: 1,
+                        add2: 2
+                    },
+                    success: function(res) {
+                        if (res.code == 0) {
+                            alert("recvive success code");
+                        }else{
+                            alert("recvive fail code");
+                        }
+                    },
+                    async: true
+                });
+
+            });
+        });
+    </script>-->
