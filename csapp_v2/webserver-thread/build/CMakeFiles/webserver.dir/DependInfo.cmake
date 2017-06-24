@@ -5,26 +5,26 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/honkee/study/cpp/csapp_v2/webserver/utils/csapp.c" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/utils/csapp.c.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/csapp.c" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/utils/csapp.c.o"
   )
-set(CMAKE_C_COMPILER_ID "GNU")
+set(CMAKE_C_COMPILER_ID "Clang")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   )
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/common.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/common.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/cookie_handle.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/cookie_handle.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/get_method.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/get_method.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/handle.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/handle.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/hash_control.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/hash_control.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/main.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/main.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/src/post_method.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/src/post_method.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/utils/FileTools.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/utils/FileTools.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/utils/TimeTools.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/utils/TimeTools.cpp.o"
-  "/home/honkee/study/cpp/csapp_v2/webserver/utils/UUIDTools.cpp" "/home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/webserver.dir/utils/UUIDTools.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/common.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/common.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/cookie_handle.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/cookie_handle.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/get_method.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/get_method.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/handle.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/handle.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/hash_control.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/hash_control.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/main.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/main.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/src/post_method.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/src/post_method.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/FileTools.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/utils/FileTools.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/TimeTools.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/utils/TimeTools.cpp.o"
+  "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/UUIDTools.cpp" "/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/build/CMakeFiles/webserver.dir/utils/UUIDTools.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "Clang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
