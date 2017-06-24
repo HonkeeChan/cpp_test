@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 cmake_policy(SET CMP0015 NEW)
 project (webserver)
 
@@ -9,6 +9,7 @@ include_directories(
 
 link_directories(
     /usr/local/lib
+    ./lib
 )
 
 set(SRC_LIST 
@@ -19,7 +20,6 @@ set(SRC_LIST
     src/cookie_handle.cpp
     src/hash_control.cpp
     src/common.cpp
-    utils/csapp.c
     utils/TimeTools.cpp
     utils/FileTools.cpp
     utils/UUIDTools.cpp
@@ -33,4 +33,5 @@ target_link_libraries(
     pthread
     memcached
     uuid
+    csapp
 )

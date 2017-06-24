@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/csapp.c
+/home/honkee/study/cpp/csapp_v2/webserver-thread/utils/csapp.c
 csapp.h
-/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/csapp.h
+/home/honkee/study/cpp/csapp_v2/webserver-thread/utils/csapp.h
 
-/Users/honkee/study/background/cpp/csapp_v2/webserver-thread/utils/csapp.h
+/home/honkee/study/cpp/csapp_v2/webserver-thread/utils/csapp.h
 stdio.h
 -
 stdlib.h
