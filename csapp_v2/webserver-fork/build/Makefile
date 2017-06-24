@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/honkee/study/cpp/csapp_v2/webserver
+CMAKE_SOURCE_DIR = /home/honkee/study/cpp/csapp_v2/webserver-fork
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/honkee/study/cpp/csapp_v2/webserver/build
+CMAKE_BINARY_DIR = /home/honkee/study/cpp/csapp_v2/webserver-fork/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles /home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/honkee/study/cpp/csapp_v2/webserver-fork/build/CMakeFiles /home/honkee/study/cpp/csapp_v2/webserver-fork/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/honkee/study/cpp/csapp_v2/webserver/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/honkee/study/cpp/csapp_v2/webserver-fork/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -393,33 +393,6 @@ utils/UUIDTools.cpp.s:
 	$(MAKE) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/utils/UUIDTools.cpp.s
 .PHONY : utils/UUIDTools.cpp.s
 
-utils/csapp.o: utils/csapp.c.o
-
-.PHONY : utils/csapp.o
-
-# target to build an object file
-utils/csapp.c.o:
-	$(MAKE) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/utils/csapp.c.o
-.PHONY : utils/csapp.c.o
-
-utils/csapp.i: utils/csapp.c.i
-
-.PHONY : utils/csapp.i
-
-# target to preprocess a source file
-utils/csapp.c.i:
-	$(MAKE) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/utils/csapp.c.i
-.PHONY : utils/csapp.c.i
-
-utils/csapp.s: utils/csapp.c.s
-
-.PHONY : utils/csapp.s
-
-# target to generate assembly for a file
-utils/csapp.c.s:
-	$(MAKE) -f CMakeFiles/webserver.dir/build.make CMakeFiles/webserver.dir/utils/csapp.c.s
-.PHONY : utils/csapp.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -459,9 +432,6 @@ help:
 	@echo "... utils/UUIDTools.o"
 	@echo "... utils/UUIDTools.i"
 	@echo "... utils/UUIDTools.s"
-	@echo "... utils/csapp.o"
-	@echo "... utils/csapp.i"
-	@echo "... utils/csapp.s"
 .PHONY : help
 
 
