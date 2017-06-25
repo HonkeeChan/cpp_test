@@ -4,6 +4,7 @@
 #include "../include/handle.h"
 #include "../include/hash_control.h"
 #include "../utils/UUIDTools.h"
+#include "../utils/SafeQueue.h"
 
 extern "C"{
     #include<event.h>  
@@ -14,6 +15,8 @@ extern "C"{
 
 using namespace std;
 
+#define N_THREAD 4
+
 HashControl gHashContorl;
 struct mt_struct{
     int connfd;
@@ -22,10 +25,27 @@ struct mt_struct{
 };
 void test();
 void init_limit();
-void* mt_doit(void* arg);
+void OnAccept(int iListenfd, short iEvent, void*arg);
+void OnDoit(int iConnfd, short iEvent, void* arg);
+void OnDoItDispatch(int iListenfd, short iEvent, void* arg);
+void* create_worker(void* arg);
+void work_thread_factory();
+
+struct thread_struct{
+    pthread_t thread_id;
+    struct event_base* work_process_base;
+    int notify_send_fd;
+    int notify_receive_fd;
+    struct event notify_event;
+    int tid;
+};
+
+struct event_base* listen_process_base;
+utils::SafeQueue<mt_struct> clientInfoQue[N_THREAD - 1];
+thread_struct threads[N_THREAD - 1];
+
 int main(int argc, char** argv){
-    int listenfd, connfd, port, clientlen;
-    struct sockaddr_in clientaddr;
+    int listenfd, port;
 
     if(argc != 2){
         fprintf(stderr, "usage: %s <port\n>", argv[0]);
@@ -37,35 +57,96 @@ int main(int argc, char** argv){
     listenfd = Open_listenfd(port);
     //习题11.13 忽略SIGPIPE信号
     signal(SIGPIPE, SIG_IGN);
-    while(1){
-        clientlen = sizeof(clientaddr);
-        printf("waiting for client\n");
-        connfd = Accept(listenfd, (SA *)&clientaddr, 
-            (socklen_t*)&clientlen);
-        mt_struct* parg = new mt_struct;
-        parg->connfd = connfd;
-        parg->clientaddr = clientaddr;
-        parg->clientlen = clientlen;
-        pthread_t tid;
-        pthread_create(&tid, NULL, mt_doit, (void*)parg);
-        pthread_detach(tid);
+    
+    listen_process_base = event_base_new(); 
+    struct event evListen; 
+    event_set(&evListen, listenfd, EV_READ|EV_PERSIST, OnAccept, NULL);  
+    // 设置为base事件  
+    event_base_set(listen_process_base, &evListen);  
+    // 添加事件  
+    event_add(&evListen, NULL);  
+
+    work_thread_factory();
         
+    // 事件循环  
+    event_base_dispatch(listen_process_base);  
+    
+    return 0;  
+
+}
+
+void work_thread_factory(){
+    for(int i = 0; i < N_THREAD - 1; ++i){
+        threads[i].work_process_base = event_base_new();
+        threads[i].tid = i;
+        int fds[2];
+        if(pipe(fds)){
+            printf("Can't create pipe\n");   
+        }
+        threads[i].notify_receive_fd = fds[0];
+        threads[i].notify_send_fd = fds[1];
+        event_set(&threads[i].notify_event, threads[i].notify_receive_fd,
+                EV_READ|EV_PERSIST, OnDoItDispatch, &threads[i]);  
+        event_base_set(threads[i].work_process_base, &threads[i].notify_event);  
+        event_add(&threads[i].notify_event, NULL);  
+
+        pthread_create(&threads[i].thread_id, NULL, create_worker, &threads[i]);
     }
 }
 
-
-
-void* mt_doit(void* arg){
-    mt_struct* parg = (mt_struct*)arg;
-    int connfd = ((mt_struct*)arg)->connfd;
-    printf("accept client (%s, %d)\n", 
-            inet_ntoa(((mt_struct*)arg)->clientaddr.sin_addr), 
-            ntohs(((mt_struct*)arg)->clientaddr.sin_port));
-    int rc = doit(connfd);
-    Close(connfd);
-    //delete parg;
+void* create_worker(void* arg){
+    thread_struct* me = (thread_struct*)arg;
+    printf("create worker\n");
+    event_base_dispatch(me->work_process_base);
+    printf("never come here\n");
     return NULL;
 }
+
+
+void OnDoItDispatch(int iListenfd, short iEvent, void* arg){
+    int tid = ((thread_struct*)arg)->tid;
+    mt_struct clientInfo = clientInfoQue[tid].dequeue();
+    printf("accept client (%s, %d)\n", 
+            inet_ntoa(clientInfo.clientaddr.sin_addr), 
+            ntohs(clientInfo.clientaddr.sin_port));
+    printf("dispatch task to thread %d\n", tid);
+    struct event *pEvRead = new event;  
+    event_set(pEvRead, clientInfo.connfd, EV_READ|EV_PERSIST, OnDoit, pEvRead);  
+    event_base_set(threads[tid].work_process_base, pEvRead);  
+    event_add(pEvRead, NULL);
+
+}
+
+void OnAccept(int iListenfd, short iEvent, void*arg){
+    struct sockaddr_in clientaddr;
+    int clientlen;
+    int connfd = Accept(iListenfd, (SA *)&clientaddr, 
+            (socklen_t*)&clientlen);
+
+    printf("accept client (%s, %d)\n", 
+            inet_ntoa(clientaddr.sin_addr), 
+            ntohs(clientaddr.sin_port));
+    static long cnt = 0;
+    int work_thread_id = ++cnt % (N_THREAD - 1);
+    mt_struct data = {connfd, clientaddr, clientlen};
+    clientInfoQue[work_thread_id].enqueue(data);
+    printf("thread %d: work for you\n", work_thread_id);
+    if( write(threads[work_thread_id].notify_send_fd, "", 1)  != 1){
+        printf("notify work process error\n");
+    }
+    
+}
+
+void OnDoit(int iConnfd, short iEvent, void* arg){
+    doit(iConnfd);
+
+    struct event *pEvRead = (struct event*)arg;  
+    event_del(pEvRead);  
+    delete pEvRead;  
+    close(iConnfd);  
+    return;  
+}
+
 
 void init_limit(){
     struct rlimit limit;
