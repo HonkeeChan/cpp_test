@@ -1,5 +1,5 @@
+# 去掉C语言的注释
 def deleteComment(code):
-
 	idx = 0;
 	blockCommonIdx = 0
 	lineCommonIdx = 0
@@ -11,12 +11,15 @@ def deleteComment(code):
 		# no line comment
 		if lineCommonIdx == -1:
 			blockCommonEnd = code.find("*/", blockCommonIdx + 1)
-			code = code[:blockCommonIdx] + code [blockCommonEnd  + 2:]
+			code = code[:blockCommonIdx] + code [blockCommonEnd + 2:]
 			idx = blockCommonIdx
 		# no block comment
 		elif blockCommonIdx == -1:
 			lineCommonEnd = code.find("\n", lineCommonIdx + 1)
-			code = code[:lineCommonIdx] + code [lineCommonEnd:]
+			if lineCommonEnd != -1:
+				code = code[:lineCommonIdx] + code [lineCommonEnd:]
+			else:
+				code = code[:lineCommonIdx]
 			idx = lineCommonIdx
 		# block comment before line comment
 		elif blockCommonIdx < lineCommonIdx:
@@ -26,6 +29,9 @@ def deleteComment(code):
 		# line comment before block comment
 		else :
 			lineCommonEnd = code.find("\n", lineCommonIdx + 1)
-			code = code[:lineCommonIdx] + code [lineCommonEnd:]
+			if lineCommonEnd != -1:
+				code = code[:lineCommonIdx] + code [lineCommonEnd:]
+			else:
+				code = code[:lineCommonIdx]
 			idx = lineCommonIdx
 	return code
