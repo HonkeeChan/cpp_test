@@ -8,6 +8,13 @@
 
 typedef struct sockaddr SA;
 
+
+void processSignal( int signo)
+{
+    printf ( "Signal is %d/n" , signo) ;
+    //signal ( signo, processSignal) ;
+} 
+
 int main(){
 	int sockfd;
 	socklen_t sock_len;
@@ -20,7 +27,7 @@ int main(){
 	servaddr.sin_addr.s_addr = inet_addr("125.216.241.118");
 	servaddr.sin_port = htons(1234);
 	
-
+	signal(SIGPIPE, processSignal);
 
 	int ret;
 	int cnt = 0;
