@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-
+#include <signal.h>
 typedef struct sockaddr SA;
 
 
@@ -13,7 +13,7 @@ void processSignal( int signo)
 {
     printf ( "Signal is %d/n" , signo) ;
     //signal ( signo, processSignal) ;
-} 
+}
 
 int main(){
 	int sockfd;
@@ -26,7 +26,7 @@ int main(){
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = inet_addr("125.216.241.118");
 	servaddr.sin_port = htons(1234);
-	
+
 	signal(SIGPIPE, processSignal);
 
 	int ret;
@@ -41,7 +41,7 @@ int main(){
 		buf[1023] = '\0';
 		//sprintf(buf, "hello");
 		scanf("%s", buf);
-		
+
 		ret = write(sockfd, buf, strlen(buf));
 
 		if(ret < 0){
@@ -54,17 +54,17 @@ int main(){
 		//if(len < 0){
 		//	perror("recv error");
 		//}else{
-		//	printf("recv %d bytes, %s\n", len, buf);	
+		//	printf("recv %d bytes, %s\n", len, buf);
 		//}
 
 
-		
+
 		// sleep(100);
 		// len = read(sockfd, buf, sizeof(buf));
 		// if(len < 0){
 		// 	perror("recv error");
 		// }else{
-		// 	printf("recv %d bytes, %s\n", len, buf);	
+		// 	printf("recv %d bytes, %s\n", len, buf);
 		// }
 
 	}
